@@ -1,4 +1,4 @@
-# SpamOrHam 📧
+# SpamOrHam
 
 SpamOrHam is a **from-scratch 2-layer neural network** for email spam detection.  
 Instead of using high-level deep learning libraries like PyTorch or TensorFlow, the model is implemented **entirely with NumPy**, including:
