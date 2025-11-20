@@ -247,19 +247,19 @@ def update(w1,b1,w2,b2,w1grad,b1grad,w2grad,b2grad,learningrate):
 
 #predictor - predict an actual email 
 def predict_email(email_text, vectorizer, w1, b1, w2, b2):
-    # 1. Clean text like training
+    #Clean text
     cleaned = clean_text(email_text)
 
-    # 2. Vectorize using the existing trained vectorizer
+    #Vectorize - mathematical representations 
     X_email = vectorizer.transform([cleaned]).toarray()   # shape (1, D)
 
-    # 3. Forward pass (same logic as forwardpass, but for one sample)
-    Y1 = X_email @ w1.T + b1          # (1, H)
-    A1 = 1 / (1 + np.exp(-Y1))        # sigmoid
-    Y2 = A1 @ w2.T + b2               # (1, C)
-    probs = softmax(Y2)               # (1, C)
+    #Forward pass (same logic as forwardpass, but for one sample)
+    Y1 = X_email @ w1.T + b1          
+    A1 = 1 / (1 + np.exp(-Y1))        
+    Y2 = A1 @ w2.T + b2               
+    probs = softmax(Y2)               
 
-    # 4. Get predicted class index
+    #Get predicted class index
     pred_class = np.argmax(probs, axis=1)[0]
 
     return pred_class, probs[0]
@@ -294,12 +294,12 @@ if __name__ == "__main__":
     indices = np.arange(N_train)
 
     for epoch in range(num_epochs):
-        # --- 3. Shuffle ONLY the training data each epoch ---
+        #Shuffle ONLY the training data each epoch
         indices = np.random.permutation(N_train)
         X_train = X_train[indices]
         y_train = y_train[indices]
 
-        # --- 4. Mini-batch training on training set ---
+        #Mini-batch training on training set
         for start in range(0, N_train, batch_size):
             end = start + batch_size
             X_batch = X_train[start:end]
@@ -309,13 +309,14 @@ if __name__ == "__main__":
             w1grad, b1grad, w2grad, b2grad = backprop(X_batch, y_batch, classified, Y1, A1, w2)
             w2, b2, w1, b1 = update(w1, b1, w2, b2, w1grad, b1grad, w2grad, b2grad, learningrate)
 
-        # --- 5. Evaluate on small random batches from train and test ---
+        #Eval on small random batches from train and test
         train_acc = eval_on_subset(X_train, y_train, subset_size=128)
         test_acc  = eval_on_subset(X_test,  y_test,  subset_size=128)
 
         print(
             f"epoch {epoch+1:03d} | train_acc={train_acc:.4f} | test_acc={test_acc:.4f}"
         )
+
     #save the neural network
     model = {
         "W1": w1,
